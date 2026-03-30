@@ -1,46 +1,45 @@
 #pragma once
 #include "esphome/core/component.h"
-#include "esphome/core/hal.h"
+#include "esphome/core/helpers.h"
 #include "esphome/components/sensor/sensor.h"
 
 namespace esphome::ld2450
 {
     /**
-     * @brief Simple polling sensor which publishes it's values on a regular basis.
-     * Additionally, this sensor converts the output according to the desired unit of measurement.
+     * @brief Simple polling sensor which publishes its values on a regular basis.
      */
     class PollingSensor : public sensor::Sensor, public PollingComponent
     {
     public:
         void setup() override
         {
-            // Determine unit conversion
-            // Wir prüfen, ob der String nicht leer ist
-            if (!this->get_unit_of_measurement().empty()) 
+            // In ESPHome 2026 gibt get_unit_of_measurement() einen std::string zurück.
+            // Wir prüfen, ob die Einheit "m" (Meter) ist, um ggf. von mm umzurechnen.
+            if (this->get_unit_of_measurement() == "m") 
             {
-                // Wir nutzen .c_str() um den String für strcmp kompatibel zu machen
-                if (this->get_unit_of_measurement() == "m") 
-                {
-                    this->publish_state(value / 1000.0f);
-                }
-                else
-                {
-                    this->publish_state(value);
-                }
+                conversion_factor_ = 0.001f; // mm zu m
             }
-                    conversion_factor_ = 0.1f;
+            else if (this->get_unit_of_measurement() == "cm")
+            {
+                conversion_factor_ = 0.1f; // mm zu cm
+            }
+            else 
+            {
+                conversion_factor_ = 1.0f; // Standard: mm lassen
             }
         }
 
         void update() override
         {
-            if (raw_state != value_ && !(std::isnan(raw_state) && std::isnan(value_)))
-                publish_state(value_);
+            // Wenn der Wert sich geändert hat, veröffentlichen
+            if (this->state != value_) {
+                this->publish_state(value_);
+            }
         }
 
         /**
-         * Gets the unit conversion factor of this sensor.
-         * @param new value (distance in mm)
+         * Setzt den neuen Wert und wendet den Umrechnungsfaktor an.
+         * @param new_value Wert in mm vom Sensor
          */
         void set_value(float new_value)
         {
@@ -48,10 +47,10 @@ namespace esphome::ld2450
         }
 
     private:
-        /// @brief conversion factor applied to input values
-        float conversion_factor_ = 1;
+        /// @brief Umrechnungsfaktor (wird in setup() bestimmt)
+        float conversion_factor_ = 1.0f;
 
-        /// @brief Value of this sensor (un-published)
-        float value_ = 0;
+        /// @brief Aktueller Wert des Sensors
+        float value_ = 0.0f;
     };
 } // namespace esphome::ld2450

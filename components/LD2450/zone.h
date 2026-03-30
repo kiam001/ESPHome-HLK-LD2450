@@ -189,7 +189,7 @@ namespace esphome::ld2450
     };
 
     template <typename... Ts>
-    class UpdatePolygonAction : public Action<Ts...>
+    class UpdatePolygonAction : public esphome::Action<Ts...> {
     {
     public:
         UpdatePolygonAction(Zone *parent)

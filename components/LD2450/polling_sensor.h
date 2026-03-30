@@ -13,19 +13,20 @@ namespace esphome::ld2450
     public:
         void setup() override
         {
-            // In ESPHome 2026 gibt get_unit_of_measurement() einen std::string zurück.
-            // Wir prüfen, ob die Einheit "m" (Meter) ist, um ggf. von mm umzurechnen.
-            if (this->get_unit_of_measurement() == "m") 
+            // Wir nutzen _ref() um die Warnung zu vermeiden und Performance zu verbessern
+            auto &unit = this->get_unit_of_measurement_ref();
+
+            if (unit == "m") 
             {
                 conversion_factor_ = 0.001f; // mm zu m
             }
-            else if (this->get_unit_of_measurement() == "cm")
+            else if (unit == "cm")
             {
                 conversion_factor_ = 0.1f; // mm zu cm
             }
             else 
             {
-                conversion_factor_ = 1.0f; // Standard: mm lassen
+                conversion_factor_ = 1.0f; // Standard: mm
             }
         }
 

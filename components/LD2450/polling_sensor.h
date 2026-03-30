@@ -33,12 +33,19 @@ namespace esphome::ld2450
 
         void update() override
         {
-            // Wenn der Wert sich geändert hat, veröffentlichen
-            if (this->state != value_) {
-                this->publish_state(value_);
+            // Wir prüfen: 
+            // 1. Hat sich der Wert überhaupt geändert?
+            // 2. Wenn der neue Wert NAN ist, war der alte Wert auch schon NAN?
+            if (std::isnan(value_)) {
+                if (!std::isnan(this->state)) {
+                    this->publish_state(NAN); // Nur einmalig NAN senden
+                }
+            } else {
+                if (this->state != value_) {
+                    this->publish_state(value_); // Neuen Wert senden
+                }
             }
         }
-
         /**
          * Setzt den neuen Wert und wendet den Umrechnungsfaktor an.
          * @param new_value Wert in mm vom Sensor

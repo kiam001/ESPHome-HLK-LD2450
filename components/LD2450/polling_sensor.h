@@ -11,10 +11,11 @@ namespace esphome::ld2450
     class PollingSensor : public sensor::Sensor, public PollingComponent
     {
     public:
-        void setup() override
+    void setup() override
         {
-            // Wir nutzen _ref() um die Warnung zu vermeiden und Performance zu verbessern
-            auto &unit = this->get_unit_of_measurement_ref();
+            // Wir nutzen const auto, um die Warnung zu vermeiden 
+            // und den Speicherfehler zu beheben.
+            const auto unit = this->get_unit_of_measurement_ref();
 
             if (unit == "m") 
             {

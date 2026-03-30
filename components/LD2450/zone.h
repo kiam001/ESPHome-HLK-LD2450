@@ -188,9 +188,8 @@ namespace esphome::ld2450
         uint32_t template_evaluation_interval_ = 1000;
     };
 
-    template <typename... Ts>
+template <typename... Ts>
     class UpdatePolygonAction : public esphome::Action<Ts...> {
-    {
     public:
         UpdatePolygonAction(Zone *parent)
             : parent_(parent)
@@ -199,7 +198,7 @@ namespace esphome::ld2450
 
         TEMPLATABLE_VALUE(std::vector<Point>, polygon)
 
-        void play(const Ts &...x) override
+        void play(Ts... x) override
         {
             std::vector<Point> polygon = this->polygon_.value(x...);
             this->parent_->update_polygon(polygon);

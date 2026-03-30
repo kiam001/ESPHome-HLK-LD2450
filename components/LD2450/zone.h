@@ -4,6 +4,7 @@
 #ifdef USE_BINARY_SENSOR
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #endif
+#include "esphome/core/automation.h"
 #ifdef USE_BINARY_SENSOR
 #include "esphome/components/sensor/sensor.h"
 #endif

@@ -717,7 +717,6 @@ def zone_to_code(config):
 
     return zone
 
-
 @automation.register_action(
     "LD2450.zone.update_polygon",
     UpdatePolygonAction,
@@ -725,9 +724,9 @@ def zone_to_code(config):
         {
             cv.Required(CONF_ID): cv.use_id(Zone),
             cv.Required(CONF_POLYGON): cv.templatable(cv.ensure_list(Point)),
-        },
-        synchronous=True,
+        }
     ),
+    synchronous=True,
 )
 async def update_polygon_to_code(config, action_id, template_arg, args):
     """Code generation for the update (template) polygon action."""

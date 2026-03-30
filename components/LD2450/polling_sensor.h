@@ -17,9 +17,9 @@ namespace esphome::ld2450
             // Determine unit conversion
             if (this->get_unit_of_measurement().has_value())
             {
-                if (strcmp(unit_of_measurement_, "m") == 0)
+                if (strcmp(get_unit_of_measurement_, "m") == 0)
                     conversion_factor_ = 0.001f;
-                else if ((strcmp(unit_of_measurement_, "cm") == 0))
+                else if ((strcmp(get_unit_of_measurement_, "cm") == 0))
                     conversion_factor_ = 0.1f;
             }
         }

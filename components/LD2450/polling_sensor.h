@@ -26,27 +26,26 @@ namespace esphome::ld2450
                 conversion_factor_ = 1.0f;   // Bleibt mm
         }
 
-        void update() override
+void update() override
         {
-            // Falls der neue Wert NAN ist (kein Ziel)
-            if (std::isnan(value_)) 
-            {
-                // Nur publizieren, wenn der letzte bekannte Status NICHT NAN war
-                if (!std::isnan(this->state)) 
-                {
+            // Prüfen, ob der aktuelle Wert NAN ist
+            bool current_is_nan = std::isnan(value_);
+            // Prüfen, ob der letzte gesendete Status NAN war
+            bool last_was_nan = std::isnan(this->state);
+
+            if (current_is_nan) {
+                // Nur senden, wenn wir von "Person da" zu "Person weg" wechseln
+                if (!last_was_nan) {
                     this->publish_state(NAN);
                 }
-            } 
-            else 
-            {
-                // Falls ein echter Wert da ist, nur bei Änderung senden
-                if (this->state != value_) 
-                {
+            } else {
+                // Wenn eine Person da ist (kein NAN):
+                // Senden, wenn der letzte Status NAN war ODER wenn sich der Wert geändert hat
+                if (last_was_nan || this->state != value_) {
                     this->publish_state(value_);
                 }
             }
         }
-
         /**
          * Setzt den neuen Rohwert vom Sensor (in mm).
          */

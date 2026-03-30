@@ -15,7 +15,7 @@ namespace esphome::ld2450
         void setup() override
         {
             // Determine unit conversion
-            if (unit_of_measurement_ != nullptr)
+            if (this->get_unit_of_measurement().has_value())
             {
                 if (strcmp(unit_of_measurement_, "m") == 0)
                     conversion_factor_ = 0.001f;

@@ -15,11 +15,19 @@ namespace esphome::ld2450
         void setup() override
         {
             // Determine unit conversion
-            if (this->get_unit_of_measurement().has_value())
+            // Wir prüfen, ob der String nicht leer ist
+            if (!this->get_unit_of_measurement().empty()) 
             {
-                if (strcmp(get_unit_of_measurement_, "m") == 0)
-                    conversion_factor_ = 0.001f;
-                else if ((strcmp(get_unit_of_measurement_, "cm") == 0))
+                // Wir nutzen .c_str() um den String für strcmp kompatibel zu machen
+                if (this->get_unit_of_measurement() == "m") 
+                {
+                    this->publish_state(value / 1000.0f);
+                }
+                else
+                {
+                    this->publish_state(value);
+                }
+            }
                     conversion_factor_ = 0.1f;
             }
         }
